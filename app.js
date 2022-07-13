@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -12,28 +13,30 @@ const error = require('./middlewares/error');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFoundError');
 
-mongoose.connect('mongodb://localhost:27017/diplomdb');
+mongoose.connect(process.env.MONGODB);
 
 const { PORT = 3000 } = process.env;
 const app = express();
 
-const ALLOWED_LIST = [
-  'http://mesto.willframe.nomoredomains.xyz',
-  'https://mesto.willframe.nomoredomains.xyz',
-  'http://localhost:3000',
-];
+// const ALLOWED_LIST = [
+//   'http://diplom.willframe.nomoredomains.xyz',
+//   'https://diplom.willframe.nomoredomains.xyz',
+//   'http://localhost:3000',
+// ];
 
-const corsOptions = {
-  origin: function func(origin, callback) {
-    if (ALLOWED_LIST.includes(origin)) {
-      callback(null, true);
-      return;
-    }
-    callback(null, false);
-  },
-};
+// const corsOptions = {
+//   origin: function func(origin, callback) {
+//     if (ALLOWED_LIST.includes(origin)) {
+//       callback(null, true);
+//       return;
+//     }
+//     callback(null, false);
+//   },
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+
+app.use(cors()); // Временное решение пока не готов фронтенд
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
