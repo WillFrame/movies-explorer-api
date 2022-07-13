@@ -68,6 +68,4 @@ app.use((req, res, next) => {
 app.use(errors());
 app.use(error);
 
-app.listen(PORT, () => {
-  console.log('work!');
-});
+app.listen(PORT);
