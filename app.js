@@ -13,9 +13,9 @@ const error = require('./middlewares/error');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFoundError');
 
-mongoose.connect(process.env.MONGODB);
+const { DB_ADDRESS = 'mongodb://localhost:27017/diplomdb', PORT = 3000 } = process.env;
 
-const { PORT = 3000 } = process.env;
+mongoose.connect(DB_ADDRESS);
 const app = express();
 
 // const ALLOWED_LIST = [
@@ -62,12 +62,11 @@ app.use(auth);
 app.use('/users', userRouter);
 app.use('/movies', movieRouter);
 
-app.use(errorLogger);
-
 app.use((req, res, next) => {
   next(new NotFoundError('Страницы с таким адресом не существует'));
 });
 
+app.use(errorLogger);
 app.use(errors());
 app.use(error);
 

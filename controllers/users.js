@@ -37,6 +37,9 @@ const updateUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(new ValidationError('Переданы некорректные данные.'));
       }
+      if (err.code === 11000) {
+        return next(new UniqueEmailError('Этот email уже используется'));
+      }
       return next(err);
     });
 };
