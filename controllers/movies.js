@@ -4,7 +4,8 @@ const ValidationError = require('../errors/ValidationError');
 const RootError = require('../errors/RootError');
 
 const getMovies = (req, res, next) => {
-  Movie.find({})
+  const owner = req.user._id;
+  Movie.find({ owner })
     .then((movies) => res.send({ data: movies }))
     .catch(next);
 };
@@ -47,15 +48,17 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  Movie.findByIdAndDelete(req.params.movieId)
+  Movie.findById(req.params.movieId)
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError('Фильм с указанным id не найден.');
       }
-      if (movie.owner._id.toString() !== req.user._id) {
+      if (movie.owner.toString() !== req.user._id) {
         throw new RootError('Это не ваша карточка');
+      } else {
+        return movie.remove()
+          .then(res.send({ data: movie }));
       }
-      res.send({ data: movie });
     })
     .catch(next);
 };
